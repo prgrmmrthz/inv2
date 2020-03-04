@@ -1,0 +1,108 @@
+<div *ngIf="loading" id="overlay">
+</div>
+
+<div class="container">
+    <div
+        class="container d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Inventory Sheet</h1>
+
+        <div class="btn-toolbar mb-2 mb-md-0">
+
+            <div class="btn-group mr-2">
+                <button class="btn btn-sm btn-outline-secondary" (click)="onSave()">Save</button>
+                <button class="btn btn-sm btn-outline-secondary">Export</button>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                This week
+            </button>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap">
+                <div>
+                    <i class="fas fa-table mr-1"></i>Inventory #{{invId}}
+                </div>
+                <div>
+                    <button class="btn btn-sm btn-primary" (click)="getData()">Reload Records</button>
+                    &nbsp;
+                    <select [(ngModel)]="selectedUnit">
+                        <option *ngFor="let c of unitData" [ngValue]="c.id">{{c.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div class="float-right">
+                    <input class="form-control" type="text" name="search" [(ngModel)]="term" autocomplete="off"
+                        placeholder="Start searching for Item">
+                </div>
+                <br>
+                <br>
+                <table class="table table-bordered table-sm table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let t of organicData |filter:term">
+                            <td>{{t.id}}</td>
+                            <td>{{t.name}}</td>
+                            <td>
+                                <input type="text" [(ngModel)]="t.qty" [attr.id]="'ti-'+t.id"
+                                    onKeypress="if((event.charCode < 40 || event.charCode > 57 ) && event.charCode != 46){return false;}"
+                                    (keyup.enter)="compute(t.id, $event.target.value)"
+                                    >
+                                    
+                            </td>
+                            <td>
+                                <select [(ngModel)]="t.unit">
+                                    <option *ngFor="let c of unitData" [ngValue]="c.id">{{c.name}}</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        <h4>Saving Results</h4>
+        <small *ngFor="let t of logs">{{t}} <br></small>
+    </div>
+</div>
+
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Auto Compute [Grams]</h4>
+    </div>
+    <form [formGroup]="frmCompute" (ngSubmit)="onSave()">
+        <div class="modal-body">
+            <div formArrayName="autocompute">
+                <button (click)="addAutoCompute()">+</button>
+              
+                <div *ngFor="let alias of aCompute.controls; let i=index">
+                  <!-- The repeated alias template -->
+                  <label>
+                    Alias:
+                    <input type="number" [formControlName]="i">
+                  </label>
+                </div>
+              </div>
+        </div>
+        <div class="modal-footer">
+            <div>
+                <button type="submit" class="btn btn-success" [disabled]="!frmCompute.valid">Save</button>
+            </div>
+            <div>
+                <button type="reset" class="btn btn-danger" (click)="onCancel()">Cancel</button>
+            </div>
+        </div>
+    </form>
+</ng-template>

@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="hdn">
+        <h2>Barcode Generator</h2>
+        <button (click)="createBarcode()">Load Barcode</button>
+        <button (click)="onPrint()">Print</button>
+    </div>
+    <div id="toPrint">
+        <div>
+            <span style="display: inline;" *ngFor="let t of Data; let i= index">
+                <svg [attr.id]="'b-'+t.barcode">
+                </svg>
+            </span>
+        </div>
+    </div>
+</div>

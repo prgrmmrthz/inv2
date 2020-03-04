@@ -1,0 +1,132 @@
+<div *ngIf="loading" id="overlay">
+</div>
+<div class="container">
+    <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Construct Products</h1>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <span>Products List</span>
+                <button class="btn btn-primary" (click)="openModal(template); mode=1">New Product</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="float-right">
+                <input class="form-control" type="text" name="search" [(ngModel)]="term" autocomplete="off"
+                    placeholder="Start searching for Item">
+            </div>
+            <br>
+            <div class="table-responsive d-flex justify-content-center">
+                <table class="table table-bordered table-sm">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Product</th>
+                            <th>Barcode</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let t of productsData  |filter:term">
+                            <td>{{t.name}}</td>
+                            <td>{{t.barcode}}</td>
+                            <td class="text-right">
+                                <i class="btn btn-sm btn-warning" style="color:black"
+                                    (click)="onEditProduct(t, template)">Edit</i>
+                                ||
+                                <i class="btn btn-sm btn-danger" style="color:white"
+                                    (click)="onDeleteProduct(t)">Delete</i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            Saving Results
+        </div>
+        <div class="card-body">
+            <small *ngFor="let t of logs">{{t}} <br></small>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Product [{{mode==1 ? 'New' : 'Edit'}}]</h4>
+    </div>
+    <form [formGroup]="frmProduct" (ngSubmit)="onSave()">
+        <div class="modal-body">
+            <div>
+                <div class="col">
+                    <label>Product Name </label>
+                    <input type="text" placeholder="Enter Product Name" class="form-control" formControlName="name">
+                </div>
+                <div class="col">
+                    <label>Barcode </label>
+                    <input type="text" placeholder="Enter Barcode" class="form-control" formControlName="barcode">
+                </div>
+                <ng-container *ngIf="mode===2">
+                    <br>
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-table mr-1"></i>Items Selected
+                        </div>
+                        <div class="card-body">
+                            <br>
+                            <label>Raw Materials :</label>
+                            <div class="input-group-append">
+
+                                <input [(ngModel)]="selectedValue" [ngModelOptions]="{standalone: true}"
+                                    [typeahead]="Data" typeaheadOptionField="name"
+                                    (typeaheadOnSelect)="onSelect($event)" class="form-control" placeholder="Search"
+                                    typeaheadSingleWords="true" [typeaheadScrollable]="true"
+                                    [typeaheadOptionsInScrollableView]="8">
+                                <button type="button" class="btn btn-primary" (click)="onRefreshItems()"><i
+                                        class="fa fa-fw fa-refresh"></i>Refresh</button>
+                            </div>
+                            <br>
+                            <div class="table-responsive">
+                                
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Index</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let t of dataToSave; let i =index">
+                                            <td>{{t.name}}</td>
+                                            <td>
+                                                <input type="number" [(ngModel)]="t.indexX" [ngModelOptions]="{standalone: true}" [attr.id]="'ti-'+t.id"
+                                                    onfocus="document.execCommand('selectAll',false,null)"
+                                                    onKeypress="if(event.charCode < 48 || event.charCode > 57){return false;}">
+                                            </td>
+                                            <td><i class="btn btn-danger" (click)="delete(i)" style="color:white">X</i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div>
+                <button type="submit" class="btn btn-success" [disabled]="!frmProduct.valid">Save</button>
+            </div>
+            <div>
+                <button type="reset" class="btn btn-danger" (click)="onCancel()">Cancel</button>
+            </div>
+        </div>
+    </form>
+</ng-template>

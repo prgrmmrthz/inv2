@@ -1,0 +1,72 @@
+<div *ngIf="loading" id="overlay">
+</div>
+<div class="container">
+    <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Add Stock</h1>
+
+        <div class="btn-toolbar mb-2 mb-md-0">
+
+            <div class="btn-group mr-2">
+                <button class="btn btn-sm btn-outline-secondary" (click)="onSave()">Save</button>
+                <!-- <button class="btn btn-sm btn-outline-secondary">Export</button> -->
+            </div>
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                This week
+            </button>
+        </div>
+    </div>
+    <h5>Add Stock #{{addStockId}}</h5>
+    <div class="hdn">
+        <input [(ngModel)]="selectedValue" [typeahead]="Data" typeaheadOptionField="name"
+            (typeaheadOnSelect)="onSelect($event)" class="form-control" placeholder="Search"
+            typeaheadSingleWords="true">
+    </div>
+    <br>
+    <div class="card mb-4">
+        <div class="card-header">
+                    <i class="fas fa-table mr-1"></i>Items Selected
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Item</th>
+                            <th>Stocks</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let t of dataToSave; let i = index">
+                            <td>{{t.id}}</td>
+                            <td>{{t.name}}</td>
+                            <td>
+                                <input type="number" [(ngModel)]="t.qty" [attr.id]="'ti-'+t.id"
+                                    onfocus="document.execCommand('selectAll',false,null)"
+                                    onKeypress="if(event.charCode < 48 || event.charCode > 57){return false;}">
+                            </td>
+                            <td>
+                                <select [(ngModel)]="t.unit">
+                                    <option *ngFor="let c of unitData" [ngValue]="c.id">{{c.name}}</option>
+                                </select>
+                            </td>
+                            <td><i class="btn btn-danger" (click)="delete(i)" style="color:white">X</i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            Saving Results
+        </div>
+        <div class="card-body">
+            <small *ngFor="let t of logs">{{t}} <br></small>
+        </div>
+    </div>
+</div>

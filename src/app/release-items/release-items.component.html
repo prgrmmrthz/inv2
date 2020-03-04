@@ -1,0 +1,64 @@
+<div *ngIf="loading" id="overlay">
+</div>
+<div class="container">
+    <div
+        class="container d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Release Items</h1>
+
+        <div class="btn-toolbar mb-2 mb-md-0">
+
+            <div class="btn-group mr-2">
+                <button class="btn btn-sm btn-outline-secondary" (click)="onSave()">Save</button>
+                <button class="btn btn-sm btn-outline-secondary">Export</button>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                This week
+            </button>
+        </div>
+    </div>
+    <h5>Order #{{orderId}}</h5>
+    <div>
+        <label>Barcode:
+            <input type="text" id="barcode" onfocus="document.execCommand('selectAll',false,null)" [(ngModel)]="barcode"
+                (keyup.enter)="onSearch()">
+        </label>
+        
+    </div>
+    <div class="hdn">
+        <input [(ngModel)]="selectedValue" [typeahead]="Data" typeaheadOptionField="name" typeaheadGroupField="cls"
+            (typeaheadOnSelect)="onSelect($event)" class="form-control" placeholder="Search" typeaheadSingleWords="true"
+            [typeaheadScrollable]="true" [typeaheadOptionsInScrollableView]="8">
+    </div>
+    <br>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Item</th>
+                    <th>Stocks</th>
+                    <th>Quantity</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let t of dataToSave; let i = index">
+                    <td>{{t.id}}</td>
+                    <td>{{t.name}}</td>
+                    <td>{{t.stocks}}</td>
+                    <td>
+                        <input type="number" [(ngModel)]="t.qty" [attr.id]="'ti-'+t.id"
+                            onfocus="document.execCommand('selectAll',false,null)"
+                            onKeypress="if(event.charCode < 48 || event.charCode > 57){return false;}"
+                            (blur)="validateInputX(t)">
+                    </td>
+                    <td><i class="btn btn-danger" (click)="delete(i)" style="color:white">X</i></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h4>Saving Results</h4>
+        <small *ngFor="let t of logs">{{t}} <br></small>
+    </div>
+</div>

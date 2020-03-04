@@ -1,0 +1,75 @@
+<div *ngIf="loading" id="overlay">
+</div>
+<div class="container">
+    <div
+        class="container d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Unit Conversion</h1>
+
+        <div class="btn-toolbar mb-2 mb-md-0">
+
+            <div class="btn-group mr-2">
+                <button class="btn btn-sm btn-outline-secondary" (click)="onSave()">Save</button>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap">
+                    <div>
+                        <i class="fas fa-table mr-1"></i>Unit to Convert
+                    </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="hdn">
+                <input [(ngModel)]="selectedValue" [typeahead]="convertibleUnitData" typeaheadOptionField="name"
+                    (typeaheadOnSelect)="onSelect($event)" class="form-control" placeholder="Search" typeaheadSingleWords="true"
+                    [typeaheadScrollable]="true" [typeaheadOptionsInScrollableView]="8">
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap">
+                    <div>
+                        <i class="fas fa-table mr-1"></i>{{selectedUnit ? selectedUnit.name : ''}}
+                    </div>
+                    <button class="btn btn-success" (click)="onPrint()"><i class="fas fa-print mr-1"></i>Print</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+            <table class="table table-bordered table-sm">
+                 <thead class="thead-dark">
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let t of dataToSave">
+                            <td>{{t.name}}</td>
+                            <td>
+                                <input type="number" [(ngModel)]="t.qty" [attr.id]="'ti-'+t.id"
+                                    onfocus="document.execCommand('selectAll',false,null)"
+                                    onKeypress="if(event.charCode < 48 || event.charCode > 57){return false;}"
+                                    (blur)="validateInputX(t)">
+                            </td>
+                            <td>
+                                <select [attr.id]="'u-'+t.id" [(ngModel)]="t.unit">
+                                    <option *ngFor="let c of unitData" [ngValue]="c.id">{{c.name}}</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h4>Saving Results</h4>
+        <small *ngFor="let t of logs">{{t}} <br></small>
+    </div>
+</div>
