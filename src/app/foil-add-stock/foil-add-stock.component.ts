@@ -1,26 +1,23 @@
-import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { BackendService } from '../backend.service';
-import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 import { Dsmodel } from '../dsmodel.Interface';
-import Swal from 'sweetalert2';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead/public_api';
+import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-add-stock',
-  templateUrl: './add-stock.component.html',
-  styleUrls: ['./add-stock.component.css']
+  selector: 'app-foil-add-stock',
+  templateUrl: './foil-add-stock.component.html',
+  styleUrls: ['./foil-add-stock.component.css']
 })
-export class AddStockComponent implements OnInit, OnDestroy {
-  unitData = [];
-  Data = [];
-  dataToSave = [];
-  logs = [];
-  loading = false;
-  subs: Subscription;
+export class FoilAddStockComponent implements OnInit {
+  subs: any;
+  Data: { id: any; name: any; qty: number;}[];
+  loading: boolean;
+  dataToSave: any=[];
   selectedValue: string;
-  addStockId: number;
   stockId: any;
+  logs: any;
 
   constructor(
     public router: Router,
@@ -30,38 +27,21 @@ export class AddStockComponent implements OnInit, OnDestroy {
 
   ngOnInit(){
     this.getData();
-    this.getUnit();
   }
 
   getData() {
-    ///
     let params: Dsmodel = {
       cols: 'id,name',
-      table: 'items'
+      table: 'products'
     }
     this.subs = this.be.getDataWithJoinClause(params).subscribe(d => {
       this.Data = d.map((v) => {
         return {
           id: v.id,
           name: v.name,
-          qty: 1,
-          unit: 1
+          qty: 1
         }
       });
-    }, (e) => {
-      this.loading = false;
-      console.error(e);
-    }, () => this.loading = false);
-  }
-
-  getUnit() {
-    ///////////////////////////
-    let params: Dsmodel = {
-      cols: 'id,name',
-      table: 'unitofmeasurement'
-    }
-    this.subs = this.be.getDataWithJoinClause(params).subscribe(d => {
-      this.unitData = d;
     }, (e) => {
       this.loading = false;
       console.error(e);
@@ -95,7 +75,7 @@ export class AddStockComponent implements OnInit, OnDestroy {
         this.dataToSave.splice(i, 1);
         Swal.fire(
           'Deleted!',
-          'Item has been removed.',
+          'Product has been removed.',
           'success'
         )
       }
@@ -103,14 +83,14 @@ export class AddStockComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
-    let a = { fn: `newStock()` };
+    let a = { fn: `foilnewStock()` };
     this.be.callSP(a).subscribe(r => {
       const x = r.res[0][0].result;
       if (x > 0) {
         this.stockId = x;
         let dataToSave2 = this.dataToSave.filter((v) => { return v.qty !== null });
         dataToSave2.forEach((v) => {
-          let a = { fn: `addStock(${v.id}, '${eval(v.qty).toFixed(2)}', ${this.stockId}, ${v.unit})` };
+          let a = { fn: `foiladdStock(${v.id}, '${eval(v.qty).toFixed(2)}', ${this.stockId})` };
           this.be.callSP(a).subscribe(r => {
             const x = r.res[0][0].result;
             if (x > 0) {
@@ -125,7 +105,7 @@ export class AddStockComponent implements OnInit, OnDestroy {
                 'Please check log details below.',
                 'success'
               ).then(() => {
-                let a = { fn: `updateDN(4)` };
+                let a = { fn: `updateDN(7)` };
                 this.be.callSP(a).subscribe(r => {
                   const x = r.res[0][0].result;
                   if (x > 0) {
@@ -158,15 +138,10 @@ export class AddStockComponent implements OnInit, OnDestroy {
       });
   }
 
-  compute(t, v) {
-    const tinput = this.el.nativeElement.querySelector('#ti-' + t);
-    tinput.value = eval(v);
-  }
-
   ngOnDestroy(): void {
     if (this.subs) {
       this.subs.unsubscribe();
     }
   }
-
+  
 }

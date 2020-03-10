@@ -41,10 +41,10 @@ export class StocksReportComponent implements OnInit {
 
   getData(wc?, order?) {
     let params: Dsmodel = {
-      cols: 'i.id, i.name, convertGramsToUnit(s.qty, s.unit) as qty, u.name as unit, DATE_FORMAT(s.date, "%M %d %Y") as date',
+      cols: 'i.id, i.name, s.qty as total, DATE_FORMAT(s.date, "%M %d %Y") as date, ar.qty as oldstock, addstockSum.totaladd as newpo, releaseSum.totalrelease as totalrelease',
       table: 'stocks s',
       order: `${order? order : 'i.classid, s.qty, i.name asc'}`,
-      join: 'left join items i on i.id=s.item left join unitofmeasurement u on u.id=s.unit',
+      join: 'left JOIN ( SELECT item,COALESCE(SUM(qty),0) AS totalrelease FROM inv2TEST.productiondetails GROUP BY item ) releaseSum ON releaseSum.item = s.item left JOIN ( SELECT item,COALESCE(SUM(qty),0) AS totaladd FROM inv2TEST.addstockdetails GROUP BY item ) addstockSum ON addstockSum.item = s.item right join items i on i.id=s.item left join unitofmeasurement u on u.id=s.unit left join inventoryarchivedetails ar on ar.item=s.item',
       wc: `${wc? wc : ''}`
     }
     this.subs = this.be.getDataWithJoinClause(params).subscribe(d => {
@@ -57,30 +57,48 @@ export class StocksReportComponent implements OnInit {
 
   print() {
     var columns = [
-      { title: "ID", dataKey: "id" },
       { title: "Item", dataKey: "name" },
-      { title: "Stocks", dataKey: "qty" },
-      { title: "Unit", dataKey: "unit" },
-      { title: "Date Updated", dataKey: "date" }
+      { title: "Old Stock", dataKey: "oldstock" },
+      { title: "New P.O", dataKey: "newpo" },
+      { title: 'Production', dataKey: 'totalrelease'},
+      { title: "Date Updated", dataKey: "date" },
+      { title: "Total", dataKey: "total" }
     ];
     var doc = new jsPDF('p', 'pt', 'letter');
     var totalPagesExp = "{total_pages_count_string}";
     doc.autoTable(columns, this.Data, {
+      theme: 'grid',
       startY: false, // false (indicates margin top value) or a number
       tableWidth: 'auto', // 'auto', 'wrap' or a number
       showHead: 'everyPage', // 'everyPage', 'firstPage', 'never'
       tableLineColor: 200, // number, array (see color section below)
       tableLineWidth: 0,
+      styles: {
+        fontSize: 8
+      },
       headStyles: {
         fontStyle: 'bold',
         halign: 'center'
       },
       margin: { top: 160 },
       columnStyles: {
-        amt: {
+        total: {
           halign: 'right',
           fontStyle: 'bold'
         },
+        oldstock: {
+          halign: 'right'
+        },
+        newpo: {
+          halign: 'right'
+        },
+        date: {
+          halign: 'center'
+        },
+        totalrelease: {
+          halign: 'right',
+          columnWidth: 60
+        }
       },
       didDrawPage: function (dataToPrint) {
         doc.setFontSize(18);
@@ -108,7 +126,7 @@ export class StocksReportComponent implements OnInit {
   onSearch(){
     let f=this.frmSearch;
     setTimeout(()=>{
-      this.getData(`i.name like '%${this.g('term')}%'`, `i.classid, ${this.g('option')} ${this.g('option2')}`);
+      this.getData(`i.name like '%${this.g('term')}%'`, `${this.g('option')} ${this.g('option2')}, i.classid, i.name`);
     }, 800)
   }
 

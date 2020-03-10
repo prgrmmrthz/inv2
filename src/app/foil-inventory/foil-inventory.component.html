@@ -21,36 +21,26 @@
         <div class="card-header">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap">
                 <div>
-                    <i class="fas fa-table mr-1"></i>Raw Materials
+                    <i class="fas fa-table mr-1"></i>Foil
                 </div>
                 <div>
                     <button class="btn btn-sm btn-primary" (click)="getData()">Reload Records</button>
                     &nbsp;
-                    <select [(ngModel)]="selectedUnit">
-                        <option *ngFor="let c of unitData" [ngValue]="c.id">{{c.name}}</option>
-                    </select>
                 </div>
             </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <div class="float-right">
-                    <input class="form-control" type="text" name="search" [(ngModel)]="term" autocomplete="off"
-                        placeholder="Start searching for Item">
-                </div>
-                <br>
-                <br>
                 <table class="table table-sm">
                     <thead class="thead-dark">
                         <tr>
                             <th>ID</th>
-                            <th>Item</th>
+                            <th>Product</th>
                             <th>Quantity</th>
-                            <th>Unit</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let t of organicData |filter:term">
+                        <tr *ngFor="let t of productData">
                             <td>{{t.id}}</td>
                             <td>{{t.name}}</td>
                             <td>
@@ -58,11 +48,6 @@
                                     onKeypress="if((event.charCode < 40 || event.charCode > 57 ) && event.charCode != 46){return false;}"
                                     (keyup.enter)="compute(t.id, $event.target.value)"
                                     > 
-                            </td>
-                            <td>
-                                <select [(ngModel)]="t.unit">
-                                    <option *ngFor="let c of unitData" [ngValue]="c.id">{{c.name}}</option>
-                                </select>
                             </td>
                         </tr>
                     </tbody>

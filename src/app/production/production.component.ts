@@ -28,7 +28,8 @@ export class ProductionComponent implements OnInit, OnDestroy {
 
   constructor(
     private be: BackendService,
-    private el: ElementRef
+    private el: ElementRef,
+    public router: Router
   ) { }
 
   ngOnInit(): void {
@@ -48,7 +49,7 @@ export class ProductionComponent implements OnInit, OnDestroy {
     let data = [];
     this.loading = true;
     let params: Dsmodel = {
-      cols: 'r.id,i.name,c.name as unitname, convertGramsToUnit(s.qty, s.unit) as stocks, s.unit as unitid, c.canuse, r.indexX',
+      cols: 'r.id,i.name,c.name as unitname, s.qty as stocks, s.unit as unitid, c.canuse, r.indexX, r.item as itemid',
       table: 'productRawmat r',
       join: `Left Join items i on i.id=r.item LEFT JOIN stocks s on s.item=i.id Left join unitofmeasurement c on c.id=s.unit`,
       wc: `r.product=${this.selectedProduct.id}`,
@@ -86,7 +87,8 @@ export class ProductionComponent implements OnInit, OnDestroy {
             unitid: v.unitid,
             unitname: v.unitname,
             canuse: d2,
-            indexX: v.indexX
+            indexX: v.indexX,
+            itemid: v.itemid
           }
          // console.debug(a);
           this.dataItems.push(a);
@@ -218,7 +220,7 @@ export class ProductionComponent implements OnInit, OnDestroy {
       margin: { top: 160 },
       columnStyles: {
         stockqty: {
-          halign: 'center',
+          halign: 'right',
           fontStyle: 'bold',
           columnWidth: 50
         },
@@ -349,27 +351,53 @@ export class ProductionComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
-    /* let dataToSaveX = this.dataToSave.filter((v) => { return v.qty !== null });
-    dataToSaveX.forEach((v) => {
-      let a = { fn: `releaseStock(${v.id}, ${v.qty}, ${this.orderId})` };
+    if(!this.dataItems.some((v)=>{
+    //console.debug('stock', this.c(v.stockqty, v.unitid),['qty', this.c(v.qty, v.unit)]);
+    return v.stockqty < v.qty
+    })){
+      let a = { fn: `newProduction(${this.selectedProduct.id})` };
       this.be.callSP(a).subscribe(r => {
         const x = r.res[0][0].result;
+        //console.debug(x);
         if (x > 0) {
-          this.logs.push(`${v.name} [${v.qty}] : success`);
+          //console.debug(this.dataItems);
+          let dataToSave = this.dataItems.filter((v) => { return v.qty !== null });
+          dataToSave.forEach((v) => {
+            
+            //pitem int, pqty int, pproductionid int,punit int
+            let a = { fn: `saveProductiondetails(${v.itemid}, '${v.qty}', ${x}, ${v.unit})` };
+            this.be.callSP(a).subscribe(r => {
+              const x2 = r.res[0][0].result;
+              if (x2 > 0) {
+                this.logs.push(`${v.name} : success`);
+              }
+            },
+              (e) => this.logs.push(`${v.name} : error (${e.message})`),
+              () => {
+                Swal.fire(
+                  'Finished saving!',
+                  'Please check log details below.',
+                  'success'
+                );
+              });
+          });
         }
       },
-        (e) => this.logs.push(`${v.name} : error (${e.error.sqlMessage})`),
-        () => {
-          this.loading = false;
+        (e) => {
           Swal.fire(
-            'Finished saving!',
-            'Please check log details below.',
-            'success'
-          );
-          this.dataToSave = [];
-          this.getData();
+            'Error Creating Production ID',
+            JSON.stringify(e),
+            'error'
+          ).then(() => this.router.navigate(['/dashboard']));
         });
-    }); */
+    }else{
+      Swal.fire(
+        'Error 101',
+        'Qty > Stocks or Quantity is not correct',
+        'error'
+      );
+    }
+        
   }
 
   ngOnDestroy(): void {

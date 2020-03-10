@@ -10,6 +10,12 @@ import { BarcodeGeneratorComponent } from './barcode-generator/barcode-generator
 import { ConstructProductsComponent } from './construct-products/construct-products.component';
 import { ProductionComponent } from './production/production.component';
 import { ConvertBagComponent } from './convert-bag/convert-bag.component';
+import { FoilInventoryComponent } from './foil-inventory/foil-inventory.component';
+import { BoxesInventoryComponent } from './boxes-inventory/boxes-inventory.component';
+import { BoxesAddStockComponent } from './boxes-add-stock/boxes-add-stock.component';
+import { FoilAddStockComponent } from './foil-add-stock/foil-add-stock.component';
+import { FoilReportsComponent } from './foil-reports/foil-reports.component';
+import { BoxesReportsComponent } from './boxes-reports/boxes-reports.component';
 
 
 const routes: Routes = [
@@ -23,6 +29,12 @@ const routes: Routes = [
   { path: 'constructProducts', component: ConstructProductsComponent},
   { path: 'production', component: ProductionComponent},
   { path: 'convertbag', component: ConvertBagComponent},
+  {path:'foil-inventory', component: FoilInventoryComponent},
+  {path:'boxes-inventory', component: BoxesInventoryComponent},
+  {path:'boxesaddstock', component: BoxesAddStockComponent},
+  {path:'foiladdstock', component: FoilAddStockComponent},
+  {path:'foilreport', component: FoilReportsComponent},
+  {path:'boxesreport', component: BoxesReportsComponent},
   { path: '**', component: PageNotFoundComponent }
 ];
 

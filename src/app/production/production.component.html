@@ -68,9 +68,9 @@
                             <td>{{t.unitname}}</td>
                             <td>
                                 <ng-container *ngIf="t.stockqty">
-                                    <input type="number" [(ngModel)]="t.qty" [attr.id]="'ti-'+t.id"
+                                    <input type="text" [(ngModel)]="t.qty" [attr.id]="'ti-'+t.id"
                                         onfocus="document.execCommand('selectAll',false,null)"
-                                        onKeypress="if((event.charCode < 48 || event.charCode > 57) && !event.charCode == 120){return false;}"
+                                        mask="0*.00"
                                     >
                                 </ng-container>
                             </td>
@@ -111,7 +111,7 @@
                         <tr *ngFor="let t of materialsData">
                             <td>{{t.name}}</td>
                             <td>
-                                <input type="number" [(ngModel)]="t.qty"
+                                <input type="text" [(ngModel)]="t.qty"
                                     onKeypress="if((event.charCode < 48 || event.charCode > 57) && !event.charcode==120){return false;}">
                             </td>
                             <td>

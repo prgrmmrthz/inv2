@@ -3,7 +3,7 @@
 <div class="container">
     <div
         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Add Stock</h1>
+        <h1 class="h2">Add Foil Stock</h1>
 
         <div class="btn-toolbar mb-2 mb-md-0">
 
@@ -12,11 +12,10 @@
                 <!-- <button class="btn btn-sm btn-outline-secondary">Export</button> -->
             </div>
             <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                This week
+                
             </button>
         </div>
     </div>
-    <h5>Add Stock #{{addStockId}}</h5>
     <div class="hdn">
         <input [(ngModel)]="selectedValue" [typeahead]="Data" typeaheadOptionField="name"
             (typeaheadOnSelect)="onSelect($event)" class="form-control" placeholder="Search"
@@ -25,7 +24,7 @@
     <br>
     <div class="card mb-4">
         <div class="card-header">
-                    <i class="fas fa-table mr-1"></i>Items Selected
+                    <i class="fas fa-table mr-1"></i>Products Selected
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -33,9 +32,8 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>ID</th>
-                            <th>Item</th>
+                            <th>Product</th>
                             <th>Quantity</th>
-                            <th>Unit</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -48,11 +46,6 @@
                                     onKeypress="if((event.charCode < 40 || event.charCode > 57 ) && event.charCode != 46){return false;}"
                                     (keyup.enter)="compute(t.id, $event.target.value)"
                                     > 
-                            </td>
-                            <td>
-                                <select [(ngModel)]="t.unit">
-                                    <option *ngFor="let c of unitData" [ngValue]="c.id">{{c.name}}</option>
-                                </select>
                             </td>
                             <td><i class="btn btn-danger" (click)="delete(i)" style="color:white">X</i></td>
                         </tr>

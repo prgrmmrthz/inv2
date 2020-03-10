@@ -9,6 +9,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { NgxMaskModule, IConfig } from 'ngx-mask'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,6 +25,14 @@ import { ProductsComponent } from './products/products.component';
 import { ConstructProductsComponent } from './construct-products/construct-products.component';
 import { ProductionComponent } from './production/production.component';
 import { ConvertBagComponent } from './convert-bag/convert-bag.component';
+import { FoilInventoryComponent } from './foil-inventory/foil-inventory.component';
+import { BoxesInventoryComponent } from './boxes-inventory/boxes-inventory.component';
+import { FoilAddStockComponent } from './foil-add-stock/foil-add-stock.component';
+import { BoxesAddStockComponent } from './boxes-add-stock/boxes-add-stock.component';
+import { FoilReportsComponent } from './foil-reports/foil-reports.component';
+import { BoxesReportsComponent } from './boxes-reports/boxes-reports.component';
+
+let options: Partial<IConfig> | (() => Partial<IConfig>);
 
 @NgModule({
   declarations: [
@@ -38,7 +47,13 @@ import { ConvertBagComponent } from './convert-bag/convert-bag.component';
     ProductsComponent,
     ConstructProductsComponent,
     ProductionComponent,
-    ConvertBagComponent
+    ConvertBagComponent,
+    FoilInventoryComponent,
+    BoxesInventoryComponent,
+    FoilAddStockComponent,
+    BoxesAddStockComponent,
+    FoilReportsComponent,
+    BoxesReportsComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +67,8 @@ import { ConvertBagComponent } from './convert-bag/convert-bag.component';
     SweetAlert2Module.forRoot(),
     BsDropdownModule.forRoot(),
     NoopAnimationsModule,
-    Ng2SearchPipeModule
+    Ng2SearchPipeModule,
+    NgxMaskModule.forRoot(options)
   ],
   providers: [
     BackendService
