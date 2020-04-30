@@ -22,7 +22,7 @@
     "@fortawesome/fontawesome-free": "^5.12.1",
     "@sweetalert2/ngx-sweetalert2": "^8.0.0",
     "bootstrap": "^4.0.0-beta",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jsbarcode": "^3.11.0",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.2.13",
