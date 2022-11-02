@@ -24,7 +24,7 @@
     "bootstrap": "^4.0.0-beta",
     "jquery": "^3.4.1",
     "jsbarcode": "^3.11.0",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.2.13",
     "ng2-search-filter": "^0.5.1",
     "ngx-bootstrap": "^5.3.2",
